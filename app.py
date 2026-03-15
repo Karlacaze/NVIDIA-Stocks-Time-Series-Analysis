@@ -292,6 +292,13 @@ def load_and_train(csv_bytes):
     refs_test        = refs_all[val_end:]
 
     # Compilación idéntica al notebook v1
+    # ── Semilla fija para reproducibilidad ──────────────────────
+    import random
+    SEED = 42
+    random.seed(SEED)
+    np.random.seed(SEED)
+    tf.random.set_seed(SEED)
+
     model = build_model(WINDOW_SIZE, N_FEATURES)
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=2e-4),
