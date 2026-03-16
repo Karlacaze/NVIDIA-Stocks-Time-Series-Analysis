@@ -20,9 +20,13 @@ Time series forecasting of individual stocks is inherently limited by market vol
 
 ## Authors
 •	Laura Victoria Miquel Herrera
+
 • Karla Sofía Cantú Zendejas
+
 • Diego Sánchez Magaña
+
 • Saúl Josué Ruiz González
+
 • Rodrigo Rivas González
 
 ## Technologies & Tools
