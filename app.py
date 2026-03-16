@@ -6,14 +6,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-from sklearn.preprocessing import MinMaxScaler          # igual que notebook v1
+from sklearn.preprocessing import MinMaxScaler          
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (
     LSTM, Dense, Dropout, Bidirectional,
     LayerNormalization, Input, Conv1D,
-    Concatenate, GlobalAveragePooling1D               # igual que notebook v1
+    Concatenate, GlobalAveragePooling1D              
 )
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 import warnings
@@ -21,7 +21,7 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="NVDA Forecast", page_icon="📈", layout="wide")
 
-# ── DESIGN SYSTEM ─────────────────────────────────────────────
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
@@ -169,7 +169,6 @@ div[data-testid="stMetricDelta"] svg { display: none; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── CONSTANTS — exactamente igual que notebook v1 ─────────────
 FEATURE_COLS = [
     'ret_1', 'ret_3', 'ret_5', 'ret_10', 'ret_20',
     'ma5_ratio', 'ma10_ratio', 'ma20_ratio', 'ma50_ratio',
@@ -177,11 +176,9 @@ FEATURE_COLS = [
     'rsi', 'macd_norm', 'macd_signal', 'bb_pos',
     'hl_pct', 'oc_pct', 'vol_ratio'
 ]
-N_FEATURES  = len(FEATURE_COLS)   # 19
-WINDOW_SIZE = 30                  # igual notebook v1
+N_FEATURES  = len(FEATURE_COLS)   
+WINDOW_SIZE = 30                  
 
-
-# ── HELPERS — código copiado 1:1 del notebook v1 ──────────────
 def add_features(df):
     d = df.copy()
     d['ret_1']  = d['Adj Close'].pct_change(1)
@@ -259,7 +256,6 @@ def load_and_train(csv_bytes):
     raw_date_min = df_raw['Date'].min()
     raw_date_max = df_raw['Date'].max()
 
-    # Filtro 2020+ igual que notebook v1
     df_raw = df_raw[df_raw['Date'] >= '2020-01-01'].reset_index(drop=True)
     df_raw['Date'] = pd.to_datetime(df_raw['Date'])
 
@@ -275,7 +271,7 @@ def load_and_train(csv_bytes):
 
     df = add_features(df_raw)
 
-    # MinMaxScaler(-1,1) igual que notebook v1
+   
     scaler = MinMaxScaler(feature_range=(-1, 1))
     features_scaled = scaler.fit_transform(df[FEATURE_COLS])
 
@@ -291,8 +287,7 @@ def load_and_train(csv_bytes):
     X_test,  y_test  = X_all[val_end:],           y_all[val_end:]
     refs_test        = refs_all[val_end:]
 
-    # Compilación idéntica al notebook v1
-    # ── Semilla fija para reproducibilidad ──────────────────────
+   
     import random
     SEED = 42
     random.seed(SEED)
@@ -327,12 +322,12 @@ def load_and_train(csv_bytes):
     rmse    = np.sqrt(mean_squared_error(prices_real_df, prices_pred_arr))
     r2      = r2_score(prices_real_df, prices_pred_arr)
     mape    = np.mean(np.abs((prices_real_df - prices_pred_arr) / (prices_real_df + 1e-8))) * 100
-    # Directional accuracy — fórmula exacta del notebook v1
+    # Directional accuracy 
     dir_acc = np.mean(np.sign(y_pred_norm) == np.sign(y_real_norm)) * 100
 
     test_dates = df['Date'].iloc[test_start_idx:test_start_idx + len(y_pred_norm)].values
 
-    # Forecast 30 días — lógica idéntica al notebook v1
+    # Forecast 30 days
     last_features = features_scaled[-WINDOW_SIZE:]
     forecast_prices_list = []
     forecast_dates = pd.bdate_range(
@@ -369,7 +364,7 @@ def load_and_train(csv_bytes):
             forecast_dates, forecast_prices_arr, features_scaled, prices, scaler, data_info)
 
 
-# ── PLOT HELPERS ──────────────────────────────────────────────
+
 DARK = dict(template='plotly_dark', paper_bgcolor='#060810', plot_bgcolor='#0c0f1d')
 
 def styled_layout(fig, title="", height=400):
@@ -385,7 +380,7 @@ def styled_layout(fig, title="", height=400):
     return fig
 
 
-# ── SIDEBAR ───────────────────────────────────────────────────
+
 with st.sidebar:
     st.markdown("""
     <div style='padding:1rem 0 0.5rem 0'>
@@ -425,7 +420,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 
-# ── TOP BAR ───────────────────────────────────────────────────
+
 st.markdown("""
 <div class='top-bar'>
   <div>
@@ -458,9 +453,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "FORECAST", "PERFORMANCE", "TRAINING", "ARCHITECTURE", "DATASET"
 ])
 
-# ══════════════════════════════════════════════════════════════
-# TAB 1 — FORECAST
-# ══════════════════════════════════════════════════════════════
+
 with tab1:
     last_price  = df['Adj Close'].iloc[-1]
     last_date   = df['Date'].iloc[-1].date()
@@ -501,7 +494,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-    # KPIs — dir_acc viene de la fórmula exacta del notebook v1
+    # KPIs — dir_acc 
     day_n_price = forecast_prices_arr[forecast_days - 1]
     day_n_pct   = (day_n_price - last_price) / last_price * 100
     max_p = forecast_prices_arr[:forecast_days].max()
@@ -574,9 +567,7 @@ with tab1:
     st.dataframe(fc_df, use_container_width=True, hide_index=True)
 
 
-# ══════════════════════════════════════════════════════════════
-# TAB 2 — PERFORMANCE
-# ══════════════════════════════════════════════════════════════
+
 with tab2:
     st.markdown("<div class='section-title'>Test set metrics</div>", unsafe_allow_html=True)
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -621,9 +612,7 @@ with tab2:
     st.plotly_chart(fig_r, use_container_width=True)
 
 
-# ══════════════════════════════════════════════════════════════
-# TAB 3 — TRAINING
-# ══════════════════════════════════════════════════════════════
+
 with tab3:
     ep   = list(range(1, len(history.history['loss']) + 1))
     tl   = history.history['loss']
@@ -676,9 +665,6 @@ with tab3:
     st.plotly_chart(fig_p, use_container_width=True)
 
 
-# ══════════════════════════════════════════════════════════════
-# TAB 4 — ARCHITECTURE
-# ══════════════════════════════════════════════════════════════
 with tab4:
     col_l, col_r = st.columns(2)
     with col_l:
@@ -743,9 +729,7 @@ with tab4:
         st.markdown(tags, unsafe_allow_html=True)
 
 
-# ══════════════════════════════════════════════════════════════
-# TAB 5 — DATASET INFO
-# ══════════════════════════════════════════════════════════════
+
 with tab5:
     di = data_info
     st.markdown("<div class='section-title'>General info</div>", unsafe_allow_html=True)
