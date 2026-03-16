@@ -683,7 +683,7 @@ with tab4:
     col_l, col_r = st.columns(2)
     with col_l:
         st.markdown("<div class='section-title'>Model branches</div>", unsafe_allow_html=True)
-        st.markdown("**🔷 LSTM Branch** — long-term temporal patterns")
+        st.markdown("**LSTM Branch** — long-term temporal patterns")
         st.code(
             "Input (30, 19)\n"
             "→ BiLSTM(96) + LayerNorm + Dropout(0.25)\n"
@@ -691,7 +691,7 @@ with tab4:
             "→ output (96,)",
             language="text"
         )
-        st.markdown("**🔶 CNN Branch** — short-term local patterns")
+        st.markdown("**CNN Branch** — short-term local patterns")
         st.code(
             "Input (30, 19)\n"
             "→ Conv1D(64, kernel=3, relu)\n"
@@ -700,7 +700,7 @@ with tab4:
             "→ output (32,)",
             language="text"
         )
-        st.markdown("**🔗 Fusion Head**")
+        st.markdown("**Fusion Head**")
         st.code(
             "Concatenate → (128,)\n"
             "→ Dense(64, relu) + Dropout(0.15)\n"
