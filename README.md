@@ -19,7 +19,11 @@ The hybrid CNN-BiLSTM model demonstrated strong performance on the test set, cap
 Time series forecasting of individual stocks is inherently limited by market volatility and external factors not captured in historical price data alone. The model could be improved by incorporating additional features such as trading sentiment, macroeconomic indicators, or earnings calendar data. Ensemble approaches combining LSTM with transformer-based architectures may further improve prediction accuracy. This type of analysis serves as a valuable educational tool for understanding how deep learning can be applied to financial time series, but predictions should not be used as the sole basis for investment decisions.
 
 ## Authors
-•	Karla Cantu (https://github.com/Karlacaze)
+•	Laura Victoria Miquel Herrera
+• Karla Sofía Cantú Zendejas
+• Diego Sánchez Magaña
+• Saúl Josué Ruiz González
+• Rodrigo Rivas González
 
 ## Technologies & Tools
 •	Python (Pandas, NumPy, Scikit-learn, TensorFlow/Keras, Plotly)
